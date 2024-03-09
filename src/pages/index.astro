@@ -1,5 +1,41 @@
 ---
+import Gallery from '../components/Gallery.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { getImage } from 'astro:assets';
+import image from '../images/nature/pexels-nathan-cowley-1192671.jpg';
+
+const optimizedImage = await getImage({ src: image, format: 'webp' });
+const optimizedImageCssUrl = `url(${optimizedImage.src})`;
+
+const imageFiles = await Astro.glob('../images/nature/*.jpg');
+
+const images = imageFiles.map((file) => ({
+  data: file.default,
+  alt: 'This is a random image of nature'
+}));
 ---
 
-<BaseLayout />
+<BaseLayout>
+  <h1>Image gallery</h1>
+  <div class="image-container">
+    <p class="caption">Sunset at the beach</p>
+  </div>
+  <Gallery images={images} />
+</BaseLayout>
+
+<style define:vars={{ optimizedImageCssUrl }}>
+  .image-container {
+    width: 300px;
+    aspect-ratio: 1.5;
+    margin: 0 0 1rem;
+    background-image: var(--optimizedImageCssUrl);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+  }
+
+  .caption {
+    text-align: center;
+    padding: 0.5rem 0;
+  }
+</style>
