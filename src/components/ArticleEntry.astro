@@ -1,0 +1,50 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { Image } from 'astro:assets';
+
+interface Props {
+  entry: CollectionEntry<'articles'>;
+}
+
+const { entry } = Astro.props;
+---
+
+<article class="article">
+  <div class="thumbnail">
+    <Image src={entry.data.thumbnail} alt="" />
+  </div>
+  <div class="data">
+    <h3>
+      <a href={`/collections/articles/${entry.slug}`}>
+        {entry.data.title}
+      </a>
+    </h3>
+    <em>{entry.data.pubDate.toDateString()}</em>
+    <p>{entry.data.description}</p>
+  </div>
+</article>
+
+<style>
+  .article {
+    display: flex;
+    margin-bottom: 2rem;
+  }
+
+  .thumbnail {
+    flex: 2 2 0;
+    margin-right: 1rem;
+
+    img {
+      width: 100%;
+      height: auto;
+    }
+  }
+
+  .data {
+    flex: 8 8 0;
+
+    h3 {
+      margin-top: 0;
+    }
+  }
+</style>

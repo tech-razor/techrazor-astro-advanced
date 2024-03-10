@@ -1,11 +1,16 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { Image } from 'astro:assets';
 import { getCollection } from 'astro:content';
 import BookEntry from '../components/BookEntry.astro';
+import ArticleEntry from '../components/ArticleEntry.astro';
 
 const books = await getCollection('books');
 const articles = await getCollection('articles');
+
+const filteredBooks = await getCollection(
+  'books',
+  ({ data }) => data.pages > 400
+);
 ---
 
 <BaseLayout>
@@ -14,27 +19,18 @@ const articles = await getCollection('articles');
     <div class="column">
       <h2>Books (type: 'data')</h2>
       {books.map((book) => <BookEntry entry={book} />)}
+
+      <h2>Filtered Books (type: 'data', pages &gt; 400)</h2>
+      {filteredBooks.map((book) => <BookEntry entry={book} />)}
+
+      <h2>Paginated Articles (type: 'content')</h2>
+      <h3>
+        <a href="/collections/articles/1">Click here for paginated articles</a>
+      </h3>
     </div>
     <div class="column">
       <h2>Articles (type: 'content')</h2>
-      {
-        articles.map((article) => (
-          <article class="article" style={{ marginBottom: '2rem' }}>
-            <div class="thumbnail">
-              <Image src={article.data.thumbnail} alt="" />
-            </div>
-            <div class="data">
-              <h3>
-                <a href={`/collections/articles/${article.slug}`}>
-                  {article.data.title}
-                </a>
-              </h3>
-              <em>{article.data.pubDate.toDateString()}</em>
-              <p>{article.data.description}</p>
-            </div>
-          </article>
-        ))
-      }
+      {articles.map((article) => <ArticleEntry entry={article} />)}
     </div>
   </div>
 </BaseLayout>
@@ -46,27 +42,5 @@ const articles = await getCollection('articles');
 
   .column {
     flex: 1 1 0;
-  }
-
-  .article {
-    display: flex;
-  }
-
-  .thumbnail {
-    flex: 2 2 0;
-    margin-right: 1rem;
-
-    img {
-      width: 100%;
-      height: auto;
-    }
-  }
-
-  .data {
-    flex: 8 8 0;
-
-    h3 {
-      margin-top: 0;
-    }
   }
 </style>

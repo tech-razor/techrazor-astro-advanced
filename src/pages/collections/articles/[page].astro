@@ -1,0 +1,57 @@
+---
+import { getCollection } from 'astro:content';
+import type { GetStaticPathsOptions } from 'astro';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import ArticleEntry from '../../../components/ArticleEntry.astro';
+
+export const getStaticPaths = async ({ paginate }: GetStaticPathsOptions) => {
+  const articles = await getCollection('articles');
+
+  return paginate(articles, { pageSize: 2 });
+};
+
+const { page } = Astro.props;
+---
+
+<BaseLayout>
+  <div class="pagination">
+    <p>
+      {
+        page.url.prev ? (
+          <a class="link" href={page.url.prev}>
+            Previous
+          </a>
+        ) : null
+      }
+    </p>
+    <p>Page {page.currentPage} of {page.lastPage}</p>
+    <p>
+      {
+        page.url.next ? (
+          <a class="link" href={page.url.next}>
+            Next
+          </a>
+        ) : null
+      }
+    </p>
+  </div>
+  {page.data.map((entry) => <ArticleEntry entry={entry} />)}
+</BaseLayout>
+
+<style>
+  .pagination {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-bottom: 2rem;
+
+    p {
+      flex: 1 1 0;
+      text-align: center;
+    }
+  }
+
+  .link {
+    margin: 0 1em;
+  }
+</style>
