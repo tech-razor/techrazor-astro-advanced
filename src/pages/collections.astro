@@ -1,20 +1,75 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { Image } from 'astro:assets';
 import { getCollection } from 'astro:content';
 
 const books = await getCollection('books');
+const articles = await getCollection('articles');
 ---
 
 <BaseLayout>
   <h1>Content collections</h1>
-  <h2>Books (type: 'data')</h2>
-  {
-    books.map(({ data }) => (
-      <article style={{ marginBottom: '2rem' }}>
-        <h3>{data.title}</h3>
-        <p>{data.description}</p>
-        <p>Pages: {data.pages}</p>
-      </article>
-    ))
-  }
+  <div class="container">
+    <div class="column">
+      <h2>Books (type: 'data')</h2>
+      {
+        books.map(({ data }) => (
+          <article style={{ marginBottom: '2rem' }}>
+            <h3>{data.title}</h3>
+            <p>{data.description}</p>
+            <p>Pages: {data.pages}</p>
+          </article>
+        ))
+      }
+    </div>
+    <div class="column">
+      <h2>Articles (type: 'content')</h2>
+      {
+        articles.map(({ data }) => (
+          <article class="article" style={{ marginBottom: '2rem' }}>
+            <div class="thumbnail">
+              <Image src={data.thumbnail} alt="" />
+            </div>
+            <div class="data">
+              <h3>{data.title}</h3>
+              <em>{data.pubDate.toDateString()}</em>
+              <p>{data.description}</p>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </div>
 </BaseLayout>
+
+<style>
+  .container {
+    display: flex;
+  }
+
+  .column {
+    flex: 1 1 0;
+  }
+
+  .article {
+    display: flex;
+  }
+
+  .thumbnail {
+    flex: 2 2 0;
+    margin-right: 1rem;
+
+    img {
+      width: 100%;
+      height: auto;
+    }
+  }
+
+  .data {
+    flex: 8 8 0;
+
+    h3 {
+      margin-top: 0;
+    }
+  }
+</style>

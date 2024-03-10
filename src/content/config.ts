@@ -9,6 +9,20 @@ const booksCollection = defineCollection({
   })
 });
 
+const articlesCollection = defineCollection({
+  type: 'content',
+  schema: ({ image }) =>
+    z.object({
+      title: z.string(),
+      description: z.string(),
+      pubDate: z.date(),
+      thumbnail: image().refine((img) => img.format === 'jpg', {
+        message: 'Thumbnail must be a JPG image'
+      })
+    })
+});
+
 export const collections = {
-  books: booksCollection
+  books: booksCollection,
+  articles: articlesCollection
 };
