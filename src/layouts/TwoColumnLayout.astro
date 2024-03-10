@@ -1,0 +1,22 @@
+---
+
+---
+
+<div class="container">
+  <div class="column">
+    <slot name="left-column" />
+  </div>
+  <div class="column">
+    <slot name="right-column" />
+  </div>
+</div>
+
+<style>
+  .container {
+    display: flex;
+  }
+
+  .column {
+    flex: 1 1 0;
+  }
+</style>

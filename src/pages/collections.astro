@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 import BookEntry from '../components/BookEntry.astro';
 import ArticleEntry from '../components/ArticleEntry.astro';
+import TwoColumnLayout from '../layouts/TwoColumnLayout.astro';
 
 const books = await getCollection('books');
 const articles = await getCollection('articles');
@@ -15,8 +16,8 @@ const filteredBooks = await getCollection(
 
 <BaseLayout>
   <h1>Content collections</h1>
-  <div class="container">
-    <div class="column">
+  <TwoColumnLayout>
+    <div slot="left-column">
       <h2>Books (type: 'data')</h2>
       {books.map((book) => <BookEntry entry={book} />)}
 
@@ -28,19 +29,9 @@ const filteredBooks = await getCollection(
         <a href="/collections/articles/1">Click here for paginated articles</a>
       </h3>
     </div>
-    <div class="column">
+    <div slot="right-column">
       <h2>Articles (type: 'content')</h2>
       {articles.map((article) => <ArticleEntry entry={article} />)}
     </div>
-  </div>
+  </TwoColumnLayout>
 </BaseLayout>
-
-<style>
-  .container {
-    display: flex;
-  }
-
-  .column {
-    flex: 1 1 0;
-  }
-</style>
