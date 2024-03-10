@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { Image } from 'astro:assets';
 import { getCollection } from 'astro:content';
+import BookEntry from '../components/BookEntry.astro';
 
 const books = await getCollection('books');
 const articles = await getCollection('articles');
@@ -12,28 +13,24 @@ const articles = await getCollection('articles');
   <div class="container">
     <div class="column">
       <h2>Books (type: 'data')</h2>
-      {
-        books.map(({ data }) => (
-          <article style={{ marginBottom: '2rem' }}>
-            <h3>{data.title}</h3>
-            <p>{data.description}</p>
-            <p>Pages: {data.pages}</p>
-          </article>
-        ))
-      }
+      {books.map((book) => <BookEntry entry={book} />)}
     </div>
     <div class="column">
       <h2>Articles (type: 'content')</h2>
       {
-        articles.map(({ data }) => (
+        articles.map((article) => (
           <article class="article" style={{ marginBottom: '2rem' }}>
             <div class="thumbnail">
-              <Image src={data.thumbnail} alt="" />
+              <Image src={article.data.thumbnail} alt="" />
             </div>
             <div class="data">
-              <h3>{data.title}</h3>
-              <em>{data.pubDate.toDateString()}</em>
-              <p>{data.description}</p>
+              <h3>
+                <a href={`/collections/articles/${article.slug}`}>
+                  {article.data.title}
+                </a>
+              </h3>
+              <em>{article.data.pubDate.toDateString()}</em>
+              <p>{article.data.description}</p>
             </div>
           </article>
         ))

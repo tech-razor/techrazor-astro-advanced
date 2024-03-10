@@ -1,0 +1,15 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  entry: CollectionEntry<'books'>;
+}
+
+const { entry } = Astro.props;
+---
+
+<article style={{ marginBottom: '2rem' }}>
+  <h3><a href={`/collections/books/${entry.id}`}>{entry.data.title}</a></h3>
+  <p>{entry.data.description}</p>
+  <p>Pages: {entry.data.pages}</p>
+</article>
