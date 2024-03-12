@@ -1,0 +1,22 @@
+[
+  {
+    "id": 1,
+    "title": "Portable HDD - 4 TB",
+    "price": 110.99
+  },
+  {
+    "id": 2,
+    "title": "Internal SSD - 2 TB",
+    "price": 105.79
+  },
+  {
+    "id": 3,
+    "title": "HD Monitor - 24 inch",
+    "price": 79.49
+  },
+  {
+    "id": 4,
+    "title": "DDR4 RAM - 32 GB",
+    "price": 62.99
+  }
+]

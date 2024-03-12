@@ -14,6 +14,7 @@
   "dependencies": {
     "@astrojs/mdx": "^2.1.1",
     "@astrojs/node": "^8.2.3",
+    "@astrojs/rss": "^4.0.5",
     "astro": "^4.7.0"
   },
   "devDependencies": {

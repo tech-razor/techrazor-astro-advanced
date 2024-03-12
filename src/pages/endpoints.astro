@@ -1,5 +1,74 @@
 ---
+export const prerender = false;
+
+import fetcher from '../data/fetcher';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import TwoColumnLayout from '../layouts/TwoColumnLayout.astro';
+import type { Product } from '../models/product';
+
+const [
+  { dataError: productsError, data: products },
+  { dataError: productByIdError, data: product }
+] = await Promise.all([
+  fetcher<Product>(`${Astro.url.origin}/api/products`),
+  fetcher<Product>(`${Astro.url.origin}/api/products/3`)
+]);
 ---
 
-<BaseLayout><h1>Endpoints</h1></BaseLayout>
+<BaseLayout>
+  <h1>Endpoints</h1>
+  {
+    (productsError || productByIdError) && (
+      <div class="error">
+        <p>{productsError}</p>
+        <p>{productByIdError}</p>
+      </div>
+    )
+  }
+  <TwoColumnLayout>
+    <div slot="left-column">
+      {
+        !productsError && Array.isArray(products) && (
+          <>
+            <h2>API (GET /api/products)</h2>
+            {products.map(({ title, price }) => (
+              <article style={{ marginBottom: '2rem' }}>
+                <h3>{title}</h3>
+                <p>Price: {price}</p>
+              </article>
+            ))}
+          </>
+        )
+      }
+      {
+        !productByIdError && product && (
+          <>
+            <h2>API (GET /api/products/3)</h2>
+            <article style={{ marginBottom: '2rem' }}>
+              <h3>{(product as Product).title}</h3>
+              <p>Price: {(product as Product).price}</p>
+            </article>
+          </>
+        )
+      }
+    </div>
+    <div slot="right-column">
+      <article style={{ marginBottom: '2rem' }}>
+        <h2>Static file (GET /api/products.json)</h2>
+        <a href="/api/products.json">Products JSON file</a>
+      </article>
+      <article style={{ marginBottom: '2rem' }}>
+        <h2>Static file (GET /rss.xml)</h2>
+        <a href="/rss.xml">RSS feed for the Articles collection</a>
+      </article>
+    </div>
+  </TwoColumnLayout>
+</BaseLayout>
+
+<style>
+  .error {
+    padding: 1rem;
+    color: var(--error);
+    border: 2px solid var(--error);
+  }
+</style>
