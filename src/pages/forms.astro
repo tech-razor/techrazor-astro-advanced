@@ -1,5 +1,152 @@
 ---
+export const prerender = false;
+
 import BaseLayout from '../layouts/BaseLayout.astro';
+import TwoColumnLayout from '../layouts/TwoColumnLayout.astro';
+import ErrorPanel from '../components/ErrorPanel.astro';
+import { getProductById } from '../data/products';
+import type { Product } from '../models/product';
+
+let productTitle;
+let productPrice;
+const productIdInputName = 'product-id';
+const productTitleInputName = 'product-title';
+const productPriceInputName = 'product-price';
+
+const productTitleMinLength = 1;
+const productTitleMaxLength = 30;
+
+let product: Product | undefined;
+let successMessage;
+const formErrors = {
+  [productTitleInputName]: '',
+  [productPriceInputName]: ''
+};
+
+if (Astro.request.method === 'GET') {
+  const productId = Number(Astro.url.searchParams.get(productIdInputName));
+
+  product = getProductById(productId);
+} else if (Astro.request.method === 'POST') {
+  try {
+    const data = await Astro.request.formData();
+    productTitle = data.get(productTitleInputName) as string;
+    productPrice = data.get(productPriceInputName) as string;
+
+    if (
+      typeof productTitle !== 'string' ||
+      productTitle.length < productTitleMinLength ||
+      productTitle.length > productTitleMaxLength
+    ) {
+      formErrors[productTitleInputName] =
+        `The product title must be between ${productTitleMinLength} and ${productTitleMaxLength} characters`;
+    }
+
+    if (Number.isNaN(Number(productPrice)) || Number(productPrice) === 0) {
+      formErrors[productPriceInputName] =
+        'The product price must be a number greater than zero';
+    }
+
+    const hasFormErrors =
+      formErrors[productTitleInputName] || formErrors[productPriceInputName];
+
+    if (!hasFormErrors) {
+      // Add product
+      successMessage = `${productTitle} added succcessfully`;
+      productTitle = '';
+      productPrice = '';
+    }
+  } catch (error) {
+    // TypeError: Request.formData: Could not parse content as FormData.
+    console.log(error);
+  }
+}
 ---
 
-<BaseLayout><h1>Forms</h1></BaseLayout>
+<BaseLayout>
+  <h1>Forms</h1>
+  <ErrorPanel
+    messages={[
+      formErrors[productTitleInputName],
+      formErrors[productPriceInputName]
+    ]}
+  />
+  {
+    product && (
+      <div class="panel">
+        <h2>Product ID: {product.id}</h2>
+        <h3>{product.title}</h3>
+        <p>Price: {product.price}</p>
+      </div>
+    )
+  }
+  <TwoColumnLayout>
+    <div slot="left-column">
+      <h2>Form: GET</h2>
+      <form>
+        <label>
+          Product ID
+          <input type="number" name={productIdInputName} />
+        </label>
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+    <div slot="right-column">
+      <h2>Form: POST</h2>
+      <h3>Add a Product</h3>
+      <form method="post">
+        <label>
+          Title
+          <input
+            type="text"
+            name={productTitleInputName}
+            value={productTitle}
+            minlength={productTitleMinLength}
+            maxlength={productTitleMaxLength}
+            required
+            class:list={[
+              { 'input-error': !!formErrors[productTitleInputName] }
+            ]}
+          />
+        </label>
+        <label>
+          Price
+          <input
+            type="number"
+            name={productPriceInputName}
+            value={productPrice}
+            min="1"
+            required
+            class:list={[
+              { 'input-error': !!formErrors[productPriceInputName] }
+            ]}
+          />
+        </label>
+        <button type="submit">Submit</button>
+      </form>
+      {
+        successMessage && (
+          <div class="success-panel" style={{ marginTop: '1rem' }}>
+            {successMessage}
+          </div>
+        )
+      }
+    </div>
+  </TwoColumnLayout>
+</BaseLayout>
+
+<style>
+  .panel {
+    border: 2px dashed var(--brand-primary);
+    padding: 1rem;
+  }
+
+  .success-panel {
+    border: 2px dashed var(--success);
+    padding: 1rem;
+  }
+
+  .input-error {
+    border: 2px solid var(--error);
+  }
+</style>

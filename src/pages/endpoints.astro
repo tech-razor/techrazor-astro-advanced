@@ -1,6 +1,7 @@
 ---
 export const prerender = false;
 
+import ErrorPanel from '../components/ErrorPanel.astro';
 import fetcher from '../data/fetcher';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import TwoColumnLayout from '../layouts/TwoColumnLayout.astro';
@@ -17,14 +18,7 @@ const [
 
 <BaseLayout>
   <h1>Endpoints</h1>
-  {
-    (productsError || productByIdError) && (
-      <div class="error">
-        <p>{productsError}</p>
-        <p>{productByIdError}</p>
-      </div>
-    )
-  }
+  <ErrorPanel messages={[productsError, productByIdError]} />
   <TwoColumnLayout>
     <div slot="left-column">
       {
