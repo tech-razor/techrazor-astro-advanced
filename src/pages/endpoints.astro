@@ -18,7 +18,9 @@ const [
 
 <BaseLayout>
   <h1>Endpoints</h1>
-  <ErrorPanel messages={[productsError, productByIdError]} />
+  <ErrorPanel
+    messages={[productsError as string, productByIdError as string]}
+  />
   <TwoColumnLayout>
     <div slot="left-column">
       {

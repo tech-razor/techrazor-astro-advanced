@@ -1,9 +1,11 @@
+import type { ProductError } from '../models/product';
+
 const fetcher = async <T>(
   url: string = '',
   method: 'GET' | 'POST' | 'PUT' | 'PATCH' = 'GET',
   body: BodyInit | undefined = undefined
 ): Promise<{
-  dataError: string | undefined;
+  dataError: string | ProductError | undefined;
   data: Array<T> | T | undefined;
 }> => {
   let dataError;
@@ -35,12 +37,21 @@ const fetcher = async <T>(
   try {
     const response = await fetch(url, fetchOptions);
     const contentType = response.headers.get('content-type');
+    const isJsonResponse = contentType?.includes('application/json');
 
     if (!response.ok) {
+      if (isJsonResponse) {
+        data = await response.json();
+
+        if (data.errors) {
+          return { dataError: data.errors, data: undefined };
+        }
+      }
+
       throw new Error(`${response.status}: ${response.statusText}`);
     }
 
-    if (!contentType?.includes('application/json')) {
+    if (!isJsonResponse) {
       throw new TypeError('Unexpected Content-Type in Response');
     }
 

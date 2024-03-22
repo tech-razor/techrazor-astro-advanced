@@ -4,24 +4,24 @@ export const prerender = false;
 import BaseLayout from '../layouts/BaseLayout.astro';
 import TwoColumnLayout from '../layouts/TwoColumnLayout.astro';
 import ErrorPanel from '../components/ErrorPanel.astro';
-import { getProductById } from '../data/products';
-import type { Product } from '../models/product';
+import {
+  getProductById,
+  productIdInputName,
+  productPriceInputName,
+  productTitleInputName,
+  productTitleMaxLength,
+  productTitleMinLength,
+  validateNewProductInput
+} from '../data/products';
+import type { Product, ProductError } from '../models/product';
+import NewProductForm from '../components/NewProductForm';
 
 let productTitle;
 let productPrice;
-const productIdInputName = 'product-id';
-const productTitleInputName = 'product-title';
-const productPriceInputName = 'product-price';
-
-const productTitleMinLength = 1;
-const productTitleMaxLength = 30;
 
 let product: Product | undefined;
 let successMessage;
-const formErrors = {
-  [productTitleInputName]: '',
-  [productPriceInputName]: ''
-};
+let formErrors: ProductError | undefined;
 
 if (Astro.request.method === 'GET') {
   const productId = Number(Astro.url.searchParams.get(productIdInputName));
@@ -33,19 +33,7 @@ if (Astro.request.method === 'GET') {
     productTitle = data.get(productTitleInputName) as string;
     productPrice = data.get(productPriceInputName) as string;
 
-    if (
-      typeof productTitle !== 'string' ||
-      productTitle.length < productTitleMinLength ||
-      productTitle.length > productTitleMaxLength
-    ) {
-      formErrors[productTitleInputName] =
-        `The product title must be between ${productTitleMinLength} and ${productTitleMaxLength} characters`;
-    }
-
-    if (Number.isNaN(Number(productPrice)) || Number(productPrice) === 0) {
-      formErrors[productPriceInputName] =
-        'The product price must be a number greater than zero';
-    }
+    formErrors = validateNewProductInput(productTitle, productPrice);
 
     const hasFormErrors =
       formErrors[productTitleInputName] || formErrors[productPriceInputName];
@@ -67,8 +55,8 @@ if (Astro.request.method === 'GET') {
   <h1>Forms</h1>
   <ErrorPanel
     messages={[
-      formErrors[productTitleInputName],
-      formErrors[productPriceInputName]
+      formErrors?.[productTitleInputName],
+      formErrors?.[productPriceInputName]
     ]}
   />
   {
@@ -105,7 +93,7 @@ if (Astro.request.method === 'GET') {
             maxlength={productTitleMaxLength}
             required
             class:list={[
-              { 'input-error': !!formErrors[productTitleInputName] }
+              { 'input-error': !!formErrors?.[productTitleInputName] }
             ]}
           />
         </label>
@@ -118,7 +106,7 @@ if (Astro.request.method === 'GET') {
             min="1"
             required
             class:list={[
-              { 'input-error': !!formErrors[productPriceInputName] }
+              { 'input-error': !!formErrors?.[productPriceInputName] }
             ]}
           />
         </label>
@@ -131,22 +119,9 @@ if (Astro.request.method === 'GET') {
           </div>
         )
       }
+      <h2 style={{ marginTop: '2rem' }}>Form: POST to API endpoint</h2>
+      <h3>Add a Product</h3>
+      <NewProductForm client:load />
     </div>
   </TwoColumnLayout>
 </BaseLayout>
-
-<style>
-  .panel {
-    border: 2px dashed var(--brand-primary);
-    padding: 1rem;
-  }
-
-  .success-panel {
-    border: 2px dashed var(--success);
-    padding: 1rem;
-  }
-
-  .input-error {
-    border: 2px solid var(--error);
-  }
-</style>
