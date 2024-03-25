@@ -1,5 +1,40 @@
 ---
+export const prerender = false;
+
 import BaseLayout from '../layouts/BaseLayout.astro';
+import TwoColumnLayout from '../layouts/TwoColumnLayout.astro';
+import AllProductInfo from '../features/components/AllProductInfo.astro';
+import SingleProductInfo from '../features/components/SingleProductInfo.astro';
+import SlowComponent from '../features/components/SlowComponent.astro';
 ---
 
-<BaseLayout><h1>Streaming</h1></BaseLayout>
+<BaseLayout>
+  <h1>HTML Streaming</h1>
+  <TwoColumnLayout>
+    <div slot="left-column">
+      <h2>API (GET /api/products)</h2>
+      <AllProductInfo />
+      <h2>API (GET /api/products/3)</h2>
+      <SingleProductInfo id={3} />
+    </div>
+    <div slot="right-column">
+      <article style={{ marginBottom: '2rem' }}>
+        <h2>Static file (GET /api/products.json)</h2>
+        <a href="/api/products.json">Products JSON file</a>
+      </article>
+      <article style={{ marginBottom: '2rem' }}>
+        <h2>Static file (GET /rss.xml)</h2>
+        <a href="/rss.xml">RSS feed for the Articles collection</a>
+      </article>
+    </div>
+  </TwoColumnLayout>
+  <SlowComponent />
+</BaseLayout>
+
+<style>
+  .error {
+    padding: 1rem;
+    color: #ff5370;
+    border: 2px solid #ff5370;
+  }
+</style>

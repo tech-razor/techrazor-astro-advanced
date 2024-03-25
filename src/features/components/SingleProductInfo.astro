@@ -1,0 +1,33 @@
+---
+import ProductInfo from '../../components/ProductInfo.astro';
+import fetcher from '../../data/fetcher';
+import { type Product } from '../../models/product';
+
+interface Props {
+  id: number;
+}
+
+const { id } = Astro.props;
+
+const { dataError: productByIdError, data: product } = await fetcher<Product>(
+  `${Astro.url.origin}/api/products/${id}`
+);
+---
+
+<div style={{ marginBottom: '2rem' }}>
+  {
+    !productByIdError && product && (
+      <ProductInfo
+        title={(product as Product).title}
+        price={(product as Product).price}
+      />
+    )
+  }
+  {
+    productByIdError && (
+      <div class="error-panel" style={{ marginTop: '1rem' }}>
+        <p>{productByIdError}</p>
+      </div>
+    )
+  }
+</div>

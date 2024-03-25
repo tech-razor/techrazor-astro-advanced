@@ -1,0 +1,7 @@
+---
+import fetcher from '../../data/fetcher';
+
+const { data } = await fetcher<any>(`${Astro.url.origin}/api/slow`);
+---
+
+<h2 style="color: red">{data?.message}</h2>
