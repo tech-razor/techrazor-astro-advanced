@@ -3,6 +3,7 @@ interface Props {
   options: Array<{
     label: string;
     url: string;
+    disableTransition?: boolean;
   }>;
   activeOptionUrl: string;
   activeBackgroundColor?: string;
@@ -21,17 +22,32 @@ const activeMenuOptionColor = '#faf9f6';
 
 <ul class="menu">
   {
-    options.map(({ label, url }) => (
+    options.map(({ label, url, disableTransition }) => (
       <li>
         <a
           class:list={['menu-item', { active: url === activeOptionUrl }]}
-          href={`/${url}`}>
+          href={`/${url}`}
+          {...(disableTransition && { 'data-astro-reload': true })}>
           {label}
         </a>
       </li>
     ))
   }
 </ul>
+
+<button style={{ marginTop: '2rem', padding: '1rem' }}
+  >Click to go to the Collections page</button
+>
+
+<script>
+  import { navigate } from 'astro:transitions/client';
+
+  document.addEventListener('astro:page-load', () => {
+    document
+      .querySelector('button')
+      ?.addEventListener('click', () => navigate('/collections'));
+  });
+</script>
 
 <!-- Use the define:vars directive to pass values from a code fence to <script> or <style> tags -->
 <style define:vars={{ activeBackgroundColor, activeMenuOptionColor }}>
