@@ -1,28 +1,23 @@
 # Recap
 
-## Section 3 - Lecture 16: Server-side rendering
+## Section 3 - Lecture 17: Endpoints
 
-- Server-side rendering is needed in certain situations such as for handling form submissions or for implementing API endpoints
-- [Astro](https://astro.build/) defaults to `static` rendering mode
-- In `astro.config.mjs` we can use the `output` property to set the rendering mode. The possible values are `static`, `server` and `hybrid`
-- With `output` set to `server`, pages and endpoints will be server-rendered but we can **opt in** to static rendering for certain files
-- With `output` set to `hybrid`, pages and endpoints will be statically rendered but we can **opt out** of static rendering for certain files
-- Opting in or out is done by exporting a constant called `prerender` at the top of a file in the `pages` folder:
+- Using server-side rendering means we can do things like creating a live API endpoints that listens for requests
+- Just like regular pages, files for endpoints also go into the `pages` folder and follow the same routing principles. However, the endpoint files are not Astro page components, so they should be `.js` or `.ts` files, not `.astro` files
+- For a live `API endpoint` that listens for requests, depending on the rendering mode, either opt in or opt out of static rendering by exporting the `prerender` constant and setting it to `true` or `false`
+- In the endpoint file, we have to export a function named after a HTTP method and specified in all-caps:
 
-  - To opt in and statically render a page when in `server` mode
+  ```js
+  export const GET = () => {};
+  ```
 
-    ```js
-    export const prerender = true;
-    ```
+  The endpoint file can contain multiple handler functions within the same file, named after different HTTP methods
 
-    Files without the above line will be server rendered
+- To download files, we can create a `static-file endpoint`. Such endpoints are `.js` or `.ts` files that are named after the file to download. For example, an endpoint file called `products.json.ts` will let a user download a file called `products.json`
+- To create an RSS feed, we need to install Astro's official RSS helper package:
 
-  - To opt out and server-render a page when in `hybrid` mode
-    ```js
-    export const prerender = false;
-    ```
-    Files without the above line will be statically rendered
+  ```shell
+  npm install @astrojs/rss
+  ```
 
-- For server-side rendering, Astro requires an adapter, which can be installed as an `integration`:
-  - Adapters provide a server runtime that handles requests on demand
-  - https://docs.astro.build/en/guides/server-side-rendering/
+  We then need to create a static-file endpoint that generates the required XML for the RSS feed
