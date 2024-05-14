@@ -1,67 +1,13 @@
-# Astro starter template
+# Astro: Beyond the basics
 
-This is a starter template for an [Astro](https://astro.build/) project.
+This is a project that accompanies Section 3 of the Udemy course _Introduction to the Astro web framework_.
 
-This template was generated with the [Astro setup wizard](https://docs.astro.build/en/install/auto/#1-run-the-setup-wizard) and updated to include configuration for [TypeScript](https://www.typescriptlang.org/), [Prettier](https://prettier.io/) and [ESLint](https://eslint.org/).
+The project introduces some of the more advanced concepts of [Astro](https://astro.build/).
 
-This repository can be cloned but can also be used as a template to generate a new repository. See [Creating a repository from a template](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template) for more information on how to use GitHub repository templates.
+## Branches
 
-In your local copy, delete the `.github` folder and change the `name` field in `package.json` to something else. Then install dependencies. A `package-lock.json` file will also be generated:
+The branches are of the format `[lecture-number]-[lecture-title]`, for example, `11-more-on-css`.
 
-```shell
-npm i
-```
+Students are encouraged to compare their code with a particular branch to ensure they are on the right track.
 
-## Folder structure
-
-```text
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-│   └── env.d.ts
-└── .gitignore
-└── .prettierrc.json
-└── astro.config.mjs
-└── package.json
-└── README.md
-└── tsconfig.json
-```
-
-## IDE setup
-
-If using [Visual Studio Code](https://code.visualstudio.com/), ensure that the [Astro](https://marketplace.visualstudio.com/items?itemName=astro-build.astro-vscode), [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) and [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) extensions are installed.
-
-In addition, add the following to the user or workspace [settings](https://code.visualstudio.com/docs/getstarted/settings) for Visual Studio Code:
-
-```json
-"editor.defaultFormatter": "esbenp.prettier-vscode",
-"editor.formatOnSave": true,
-"prettier.documentSelectors": ["**/*.astro"],
-"[astro]": {
-  "editor.defaultFormatter": "esbenp.prettier-vscode"
-},
-"eslint.probe": [
-  "javascript",
-  "javascriptreact",
-  "typescript",
-  "typescriptreact",
-  "html",
-  "vue",
-  "markdown",
-  "astro"
-],
-"eslint.validate": ["astro"]
-```
-
-See the [Editor Setup](https://docs.astro.build/en/editor-setup/) section in the offical Astro documentation for information on other IDEs.
-
-## Scripts
-
-| Script            | Action                                                |
-| :---------------- | :---------------------------------------------------- |
-| `npm run dev`     | Starts local dev server at `localhost:4321`           |
-| `npm run build`   | Creates a `dist` folder containing a production build |
-| `npm run preview` | Preview a production build locally                    |
-| `npm run format`  | Formats with Prettier                                 |
-| `npm run lint`    | Lints with ESLint                                     |
+The `RECAP.md` file inside each branch contains a summary of important concepts that were introduced in the corresponding lecture.
